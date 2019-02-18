@@ -1,0 +1,26 @@
+{
+  "name": "filefilter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": "ask_q.js",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "commander": "^2.19.0",
+    "enquirer": "^2.3.0",
+    "figlet": "^1.2.1",
+    "inquirer": "^6.2.2",
+    "pkg": "^4.3.7",
+    "progress": "^2.0.3"
+  },
+  "scripts": {
+    "start": "node ask_q.js"
+  },
+  "pkg": {
+    "scripts": "build/**/*.js",
+    "assets": ["node_modules/**/**/**/*"],
+    "targets": [
+      "node10-win-x64"
+    ]
+  }
+}
