@@ -1,8 +1,9 @@
 
-const path = require('path')
-const Progress = require('progress')
-const chalk = require('chalk')
-const fs = require('fs')
+const path = require('path');
+const Progress = require('progress');
+const chalk = require('chalk');
+const fs = require('fs');
+const cliprogress = require('cli-progress');
 
 // Filter File Records...
 let fileProcess = function (inputs) {
@@ -28,16 +29,22 @@ let fileProcess = function (inputs) {
         var filedetails = fs.statSync(inputs.filePath);
         var filesize = filedetails.size;
 
-        var bar = new Progress(chalk.greenBright.bold('Processing') + ' ' + chalk.greenBright(': [ ') + ':bar' + chalk.greenBright(' ]') + ' ' + chalk.yellowBright.bold('[:percent] [:etas]'), {
-            total: filesize,
-            width: 100,
-            complete: "=",
-            incomplete: "."
-        });
+        // var bar = new Progress(chalk.greenBright.bold('Processing') + ' ' + chalk.greenBright(': [ ') + ':bar' + chalk.greenBright(' ]') + ' ' + chalk.yellowBright.bold('[:percent] [:etas]'), {
+        //     total: filesize,
+        //     width: 100,
+        //     complete: "=",
+        //     incomplete: "."
+        // });
+
+        let bar = new cliprogress.Bar({
+            format : 'Progress || '+chalk.red('{bar}')+' || {percentage}% | ETA: {eta}s | {value}/{total}'
+        },cliprogress.Presets.shades_classic);
+        bar.start(filesize,0);
 
         var previousLine;
         let total_records = 0;
         let matched = 0;
+        let total_read = 0;
 
         require('readline').createInterface({
 
@@ -45,7 +52,9 @@ let fileProcess = function (inputs) {
 
         }).on('line', function (line) {
 
-            bar.tick(Buffer.byteLength(line, 'utf8'));
+            // bar.tick(Buffer.byteLength(line, 'utf8'));
+            total_read = total_read + Buffer.byteLength(line,'utf8');
+            bar.update(total_read);
 
             total_records = total_records + 1;
 
@@ -62,7 +71,8 @@ let fileProcess = function (inputs) {
 
         }).on('close', function () {
 
-            bar.update(1);
+            // bar.update(1);
+            bar.stop();
             console.log('')
             console.log(chalk.redBright('------------------------------------------------------------------------------\r\n'))
             console.log(chalk.yellowBright('\r\nFile Filtered.')+'   '+chalk.yellowBright.bold('Total Records :'+chalk.cyanBright(total_records))+' | | '+chalk.yellowBright.bold('Matched : '+chalk.cyanBright(matched)))

@@ -27,7 +27,7 @@ let question = [
 
 (async () => {
 
-    console.log(chalk.yellowBright(figlet.textSync('File Processing', {
+    console.log(chalk.yellowBright(figlet.textSync('FILE PROECESSING', {
         font: 'Fire Font-k',
         horizontalLayout: 'default',
         verticalLayout: 'default'
